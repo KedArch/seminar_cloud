@@ -1,0 +1,17 @@
+---
+all:
+  vars:
+    ansible_port: 22
+    ansible_user: "${ username }"
+    ansible_ssh_common_args: "-J ${ jump_host } -o StrictHostKeyChecking=no"
+  children:
+    control_plane:
+      hosts:
+        %{ for name, ip in control_addrs }${ name }:
+          ansible_host: ${ ip }
+        %{ endfor }
+    workers:
+      hosts:
+        %{ for name, ip in worker_addrs }${ name }:
+          ansible_host: ${ ip }
+        %{ endfor }
