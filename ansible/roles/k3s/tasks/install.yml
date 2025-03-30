@@ -1,0 +1,23 @@
+---
+- name: "Fetch registation token from first control plane"
+  become: true
+  delegate_to: "{{ groups['control_plane'] | first }}"
+  ansible.builtin.slurp:
+    src: "/var/lib/rancher/k3s/server/node-token"
+  register: token_file
+
+- name: "Set common node parameters"
+  ansible.builtin.set_fact:
+    type: "{{ 'server' if 'control_plane' in group_names else 'agent' }}"
+    token: "{{ token_file['content'] | b64decode }}"
+    server: "https://{{ hostvars[groups['control_plane'] | first]['ansible_default_ipv4']['address'] }}:6443"
+
+- name: "Install k3s node" # noqa: no-changed-when
+  ansible.builtin.shell:
+    cmd: "set -o pipefail && curl -sfL https://get.k3s.io | sh -"
+    executable: /bin/bash
+  environment:
+    INSTALL_K3S_EXEC: "{{ type }} --token {{ token }} --server {{ server }} "
+  register: out
+  changed_when: out.rc == 0
+  failed_when: out.rc != 0

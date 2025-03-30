@@ -1,0 +1,8 @@
+---
+- name: "Install k3s node" # noqa: no-changed-when
+  ansible.builtin.shell:
+    cmd: "set -o pipefail && curl -sfL https://get.k3s.io | sh -"
+    executable: /bin/bash
+  register: out
+  changed_when: out.rc == 0
+  failed_when: out.rc != 0

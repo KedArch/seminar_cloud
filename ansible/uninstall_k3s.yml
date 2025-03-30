@@ -1,0 +1,7 @@
+---
+- name: "Uninstall k3s on nodes"
+  hosts: "{{ ansible_limit | default('all') }}"
+  roles:
+    - name: k3s
+      k3s_uninstall: true
+

@@ -1,0 +1,32 @@
+---
+- name: "Check if k3s is present"
+  ansible.builtin.stat:
+    path: /usr/local/bin/k3s
+  register: k3s_binary
+
+- name: "Kill all k3s processes" # noqa: no-changed-when ignore-errors
+  ignore_errors: true
+  ansible.builtin.command: k3s-killall.sh
+  when: k3s_binary.stat.exists
+
+- name: "Uninstall k3s" # noqa: no-changed-when ignore-errors
+  ignore_errors: true
+  ansible.builtin.command: k3s-uninstall.sh
+  when: k3s_binary.stat.exists
+
+- name: "Uninstall k3s agent" # noqa: no-changed-when ignore-errors
+  ignore_errors: true
+  ansible.builtin.command: k3s-agent-uninstall.sh
+  when: k3s_binary.stat.exists
+
+- name: "Remove /var/lib/rancher dir"
+  become: true
+  ansible.builtin.file:
+    path: /var/lib/rancher
+    state: absent
+
+- name: "Remove /etc/rancher dir"
+  become: true
+  ansible.builtin.file:
+    path: /etc/rancher
+    state: absent

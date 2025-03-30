@@ -1,0 +1,17 @@
+---
+- name: "Check if k3s is installed"
+  ansible.builtin.stat:
+    path: /usr/local/bin/k3s
+  register: k3s_binary
+
+- name: "Uninstall k3s"
+  ansible.builtin.include_tasks: uninstall.yml
+  when: k3s_uninstall is defined and k3s_uninstall and k3s_binary.stat.exists
+
+- name: "Install k3s control plane node"
+  ansible.builtin.include_tasks: install_first_control_plane.yml
+  when: (k3s_uninstall is not defined or not k3s_uninstall) and (inventory_hostname == (groups['control_plane'] | first)) and not k3s_binary.stat.exists
+
+- name: "Install k3s node"
+  ansible.builtin.include_tasks: install.yml
+  when: (k3s_uninstall is not defined or not k3s_uninstall) and not (inventory_hostname == (groups['control_plane'] | first)) and not k3s_binary.stat.exists

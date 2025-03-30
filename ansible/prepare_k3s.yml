@@ -1,0 +1,5 @@
+---
+- name: "Install k3s on nodes"
+  hosts: "{{ ansible_limit | default('all') }}"
+  roles:
+    - k3s
