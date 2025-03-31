@@ -4,5 +4,7 @@
     cmd: "set -o pipefail && curl -sfL https://get.k3s.io | sh -"
     executable: /bin/bash
   register: out
+  environment:
+    INSTALL_K3S_EXEC: "server --service-node-port-range 2000-10000"
   changed_when: out.rc == 0
   failed_when: out.rc != 0

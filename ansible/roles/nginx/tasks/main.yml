@@ -1,0 +1,26 @@
+---
+- name: "Ensure dependencies are met"
+  become: true
+  ansible.builtin.apt:
+    name: python3-kubernetes
+    state: present
+    
+- name: "Copy manifest"
+  ansible.builtin.template:
+    src: nginx.yml
+    dest: nginx.yml
+    mode: "644"
+
+- name: "Create required Kubernetes resources for nginx deployment"
+  become: true
+  kubernetes.core.k8s:
+    state: "{{ state if state is defined else 'present' }}"
+    src: nginx.yml
+    force: true
+    kubeconfig: /etc/rancher/k3s/k3s.yaml
+
+- name: "Remove manifest"
+  ansible.builtin.file:
+    path: nginx.yml
+    state: absent
+  when: false

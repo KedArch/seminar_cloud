@@ -1,0 +1,4 @@
+nginx_replica_count: 2
+nginx_image: nginx:mainline-alpine
+nginx_title: Nginx example
+nginx_message: Hello World!

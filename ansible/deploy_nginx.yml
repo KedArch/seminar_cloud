@@ -1,0 +1,5 @@
+---
+- name: "Deploy nginx"
+  hosts: "{{ ansible_limit | default(groups['control_plane'] | first) }}"
+  roles:
+    - nginx
