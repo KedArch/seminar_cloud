@@ -128,12 +128,12 @@ resource "libvirt_domain" "worker" {
 locals {
   control_addrs = {
     for control in var.control_vms :
-    control => libvirt_domain.control[control].network_interface[0].addresses[0]
+    control => try(libvirt_domain.control[control].network_interface[0].addresses[0], "0.0.0.0")
   }
 
   worker_addrs = {
     for worker in var.worker_vms :
-    worker => libvirt_domain.worker[worker].network_interface[0].addresses[0]
+    worker => try(libvirt_domain.worker[worker].network_interface[0].addresses[0], "0.0.0.0")
   }
 }
 
