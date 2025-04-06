@@ -1,0 +1,10 @@
+---
+- name: "Restart deployment"
+  ansible.builtin.command: "kubectl rollout -n {{ nginx_name }} restart deployment {{ nginx_name }}-deployment"
+  become: true
+  environment:
+    KUBECONFIG: "{{ nginx_kubeconfig_location }}"
+  when: nginx_state != 'absent'
+  listen:
+    - Manifests changed
+

@@ -1,0 +1,6 @@
+---
+- name: "Remove manifests directory"
+  ansible.builtin.file:
+    path: nginx
+    state: absent
+

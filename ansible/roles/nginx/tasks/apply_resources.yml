@@ -28,15 +28,9 @@
   become: true
   kubernetes.core.k8s:
     state: "{{ nginx_state }}"
-    src: "{{ item }}"
+    src: "{{ item.path }}"
     kubeconfig: "{{ nginx_kubeconfig_location }}"
-  loop: "{{ manifest_files.files | map(attribute='path') | list | sort }}"
+  loop: "{{ manifest_files.files }}"
   notify:
     - Manifests changed
-
-- name: "Remove manifests directory"
-  ansible.builtin.file:
-    path: nginx
-    state: absent
-  when: nginx_state == 'absent'
 

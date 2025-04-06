@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ nginx_name }}-ingress
+  namespace: {{ nginx_name }}
+spec:
+  rules:
+    - host: {{ nginx_host | default ("'*'") }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ nginx_name }}-service
+                port:
+                  number: 80
+

@@ -1,4 +1,7 @@
-nginx_replica_count: 2
+nginx_name: nginx
+nginx_replicas: 2
 nginx_image: nginx:mainline-alpine
+nginx_state: present
 nginx_title: Nginx example
 nginx_message: Hello World!
+nginx_kubeconfig_location: /etc/rancher/k3s/k3s.yaml
