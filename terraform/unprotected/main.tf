@@ -16,7 +16,7 @@ data "terraform_remote_state" "protected" {
 }
 
 provider "libvirt" {
-  uri = "qemu+ssh://${var.libvirt_host}/system"
+  uri = "qemu+ssh://${var.libvirt_host}/system?sshauth=privkey"
 }
 
 locals {
