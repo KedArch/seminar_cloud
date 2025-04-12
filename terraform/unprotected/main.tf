@@ -1,4 +1,19 @@
 terraform {
+  backend "s3" {
+    endpoints = {
+      s3 = "${var.s3_endpoint}"
+    }
+    region = "${var.s3_region}"
+    bucket = "${var.s3_bucket}"
+    key = "${var.s3_key}"
+    access_key = "${var.s3_access_key}"
+    secret_key = "${var.s3_secret_key}"
+    skip_credentials_validation = true
+    skip_requesting_account_id = true
+    skip_metadata_api_check = true
+    skip_region_validation = true
+    use_path_style = true
+  }
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
@@ -8,10 +23,22 @@ terraform {
 }
 
 data "terraform_remote_state" "protected" {
-  backend = "local"
+  backend = "s3"
 
   config = {
-    path = "../protected/terraform.tfstate"
+    endpoints = {
+      s3 = "${var.s3_endpoint}"
+    }
+    region = "${var.s3_region}"
+    bucket = "${var.s3_bucket}"
+    key = "${var.s3_remote_key}"
+    access_key = "${var.s3_access_key}"
+    secret_key = "${var.s3_secret_key}"
+    skip_credentials_validation = true
+    skip_requesting_account_id = true
+    skip_metadata_api_check = true
+    skip_region_validation = true
+    use_path_style = true
   }
 }
 
@@ -65,7 +92,7 @@ resource "libvirt_volume" "qcow2" {
 
   name          = "${each.key}.qcow2"
   pool          = "default"
-  base_volume_id = data.terraform_remote_state.protected.outputs.template_id
+  base_volume_id = data.terraform_remote_state.protected.outputs.template
   format        = "qcow2"
 }
 

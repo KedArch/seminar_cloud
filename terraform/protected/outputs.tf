@@ -1,4 +1,4 @@
-output "template_id" {
+output "template" {
   value = libvirt_volume.template.id
 }
 
