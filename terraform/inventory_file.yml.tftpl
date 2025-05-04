@@ -1,0 +1,14 @@
+---
+all:
+  vars:
+    ansible_port: 22
+    ansible_user: "${ username }"
+    ansible_ssh_common_args: "-J ${ jump_host } -o StrictHostKeyChecking=no"
+  children:
+    %{ for vm_type, vms in vm_inventory }${ vm_type }:
+      hosts:
+        %{ for vm in vms }${ vm.name }:
+          ansible_host: ${ vm.ip }
+        %{ endfor }
+    %{ endfor }
+
